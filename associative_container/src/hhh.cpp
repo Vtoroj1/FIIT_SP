@@ -4,3 +4,5 @@
 
 
 #include "associative_container.h"
+
+volatile int dummy = 2;
