@@ -102,15 +102,17 @@ TEST(bTreePositiveTests, test1)
 {
     std::vector<test_data<int, std::string>> expected_result =
             {
-                    test_data<int, std::string>(0, 1, "a"),
-                    test_data<int, std::string>(1, 2, "b"),
-                    test_data<int, std::string>(2, 3, "d"),
-                    test_data<int, std::string>(0, 4, "e"),
-                    test_data<int, std::string>(0, 15, "c"),
-                    test_data<int, std::string>(1, 27, "f")
+        test_data<int, std::string>(0, -10, "g"),
+        test_data<int, std::string>(1, 0, "h"),
+        test_data<int, std::string>(2, 1, "a"),
+        test_data<int, std::string>(3, 2, "b"),
+        test_data<int, std::string>(0, 3, "d"),
+        test_data<int, std::string>(1, 4, "e"),
+        test_data<int, std::string>(2, 15, "c"),
+        test_data<int, std::string>(3, 27, "f"),
             };
 
-    BSP_tree<int, std::string, std::less<int>, 3> tree(std::less<int>(), nullptr);
+    BSP_tree<int, std::string, std::less<int>, 2> tree(std::less<int>(), nullptr);
 
     tree.emplace(1, std::string("a"));
     tree.emplace(2, std::string("b"));
@@ -118,6 +120,8 @@ TEST(bTreePositiveTests, test1)
     tree.emplace(3, std::string("d"));
     tree.emplace(4, std::string("e"));
     tree.emplace(27, std::string("f"));
+    tree.emplace(-10, std::string("g"));
+    tree.emplace(0, std::string("h"));
 
     EXPECT_TRUE(infix_const_iterator_test(tree, expected_result));
 }
@@ -131,7 +135,7 @@ TEST(bTreePositiveTests, test2)
                     test_data<int, std::string>(2, 3, "d"),
                     test_data<int, std::string>(3, 4, "e"),
                     test_data<int, std::string>(4, 15, "c"),
-                    test_data<int, std::string>(0, 24, "g"),
+                    test_data<int, std::string>(5, 24, "g"),
                     test_data<int, std::string>(0, 45, "k"),
                     test_data<int, std::string>(1, 100, "f"),
                     test_data<int, std::string>(2, 101, "j"),
@@ -140,7 +144,7 @@ TEST(bTreePositiveTests, test2)
                     test_data<int, std::string>(5, 534, "m")
             };
 
-    BSP_tree<int, std::string, std::less<int>, 5> tree(std::less<int>(), nullptr);
+    BSP_tree<int, std::string, std::less<int>, 3> tree(std::less<int>(), nullptr);
 
     tree.emplace(1, std::string("a"));
     tree.emplace(2, std::string("b"));
@@ -201,18 +205,18 @@ TEST(bTreePositiveTests, test4)
                     test_data<int, std::string>(0, 1, "a"),
                     test_data<int, std::string>(1, 2, "b"),
                     test_data<int, std::string>(2, 3, "d"),
-                    test_data<int, std::string>(0, 4, "e"),
-                    test_data<int, std::string>(0, 15, "c"),
-                    test_data<int, std::string>(1, 24, "g"),
-                    test_data<int, std::string>(2, 45, "k"),
-                    test_data<int, std::string>(1, 100, "f"),
-                    test_data<int, std::string>(0, 101, "j"),
-                    test_data<int, std::string>(1, 193, "l"),
-                    test_data<int, std::string>(2, 456, "h"),
-                    test_data<int, std::string>(3, 534, "m")
+                    test_data<int, std::string>(3, 4, "e"),
+                    test_data<int, std::string>(4, 15, "c"),
+                    test_data<int, std::string>(5, 24, "g"),
+                    test_data<int, std::string>(6, 45, "k"),
+                    test_data<int, std::string>(7, 100, "f"),
+                    test_data<int, std::string>(8, 101, "j"),
+                    test_data<int, std::string>(9, 193, "l"),
+                    test_data<int, std::string>(10, 456, "h"),
+                    test_data<int, std::string>(11, 534, "m")
             };
 
-    BSP_tree<int, std::string, std::less<int>, 3> tree(std::less<int>(), nullptr);
+    BSP_tree<int, std::string, std::less<int>, 5> tree(std::less<int>(), nullptr);
 
     tree.emplace(1, std::string("a"));
     tree.emplace(2, std::string("b"));
@@ -256,19 +260,29 @@ TEST(bTreePositiveTests, test5)
 
 TEST(bTreePositiveTests, test6)
 {
-    std::vector<test_data<int, std::string>> expected_result =
+    std::vector<test_data<int, std::string>> expected_result_before_erase =
             {
-                    test_data<int, std::string>(0, 2, "b"),
-                    test_data<int, std::string>(1, 3, "d"),
-                    test_data<int, std::string>(2, 4, "e"),
-                    test_data<int, std::string>(0, 15, "c"),
-                    test_data<int, std::string>(0, 45, "k"),
-                    test_data<int, std::string>(1, 101, "j"),
-                    test_data<int, std::string>(2, 456, "h"),
-                    test_data<int, std::string>(3, 534, "m")
+                test_data<int, std::string>(0, 1, "a"),
+                test_data<int, std::string>(1, 2, "b"),
+                test_data<int, std::string>(2, 3, "d"),
+                test_data<int, std::string>(3, 4, "e"),
+                test_data<int, std::string>(0, 15, "c"),
+                test_data<int, std::string>(1, 24, "g"),
+                test_data<int, std::string>(2, 100, "f"),
+                test_data<int, std::string>(3, 101, "j"),
+                test_data<int, std::string>(4, 456, "h"),
             };
 
-    BSP_tree<int, std::string, std::less<int>, 4> tree(std::less<int>(), nullptr);
+    std::vector<test_data<int, std::string>> expected_result =
+            {
+                test_data<int, std::string>(0, 2, "b"),
+                test_data<int, std::string>(1, 3, "d"),
+                test_data<int, std::string>(2, 15, "c"),
+                test_data<int, std::string>(3, 24, "g"),
+                test_data<int, std::string>(4, 101, "j"),
+            };
+
+    BSP_tree<int, std::string, std::less<int>, 2> tree(std::less<int>(), nullptr);
 
     tree.emplace(1, std::string("a"));
     tree.emplace(2, std::string("b"));
@@ -279,26 +293,16 @@ TEST(bTreePositiveTests, test6)
     tree.emplace(24, std::string("g"));
     tree.emplace(456, std::string("h"));
     tree.emplace(101, std::string("j"));
-    tree.emplace(45, std::string("k"));
-    tree.emplace(193, std::string("l"));
-    tree.emplace(534, std::string("m"));
 
-    auto first_disposed = std::move(tree.at(1));
-    auto second_disposed = std::move(tree.at(100));
-    auto third_disposed = std::move(tree.at(193));
-    auto fourth_disposed = std::move(tree.at(24));
+    EXPECT_TRUE(infix_const_iterator_test(tree, expected_result_before_erase));
 
+    /* при удалении два узла должны объединиться в один */
     tree.erase(1);
     tree.erase(100);
-    tree.erase(193);
-    tree.erase(24);
+    tree.erase(456);
+    tree.erase(4);
 
     EXPECT_TRUE(infix_const_iterator_test(tree, expected_result));
-
-    EXPECT_TRUE(first_disposed == "a");
-    EXPECT_TRUE(second_disposed == "f");
-    EXPECT_TRUE(third_disposed == "l");
-    EXPECT_TRUE(fourth_disposed == "g");
 }
 
 TEST(bTreePositiveTests, test7)
@@ -403,7 +407,7 @@ TEST(bTreePositiveTests, test9)
                     { 101, "j" },
             };
 
-    BSP_tree<int, std::string, std::less<int>, 5> tree(std::less<int>(), nullptr);
+    BSP_tree<int, std::string, std::less<int>, 2> tree(std::less<int>(), nullptr);
 
     tree.emplace(1, std::string("a"));
     tree.emplace(2, std::string("b"));
@@ -416,10 +420,10 @@ TEST(bTreePositiveTests, test9)
     tree.emplace(101, std::string("j"));
     tree.emplace(45, std::string("k"));
     tree.emplace(193, std::string("l"));
-    tree.emplace(534, std::string("m"));
 
-    auto b = tree.begin();
-    auto e = tree.end();
+
+    auto b = tree.lower_bound(4);
+    auto e = tree.upper_bound(110);
     std::vector<decltype(tree)::value_type> actual_result(b, e);
 
     EXPECT_TRUE(compare_obtain_results(expected_result, actual_result));

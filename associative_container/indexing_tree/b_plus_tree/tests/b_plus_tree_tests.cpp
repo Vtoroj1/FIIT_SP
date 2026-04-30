@@ -106,8 +106,8 @@ TEST(bTreePositiveTests, test1)
                     test_data<int, std::string>(1, 2, "b"),
                     test_data<int, std::string>(2, 3, "d"),
                     test_data<int, std::string>(0, 4, "e"),
-                    test_data<int, std::string>(0, 15, "c"),
-                    test_data<int, std::string>(1, 27, "f")
+                    test_data<int, std::string>(1, 15, "c"),
+                    test_data<int, std::string>(2, 27, "f")
             };
 
     BP_tree<int, std::string, std::less<int>, 3> tree(std::less<int>(), nullptr);
@@ -132,12 +132,12 @@ TEST(bTreePositiveTests, test2)
                     test_data<int, std::string>(3, 4, "e"),
                     test_data<int, std::string>(4, 15, "c"),
                     test_data<int, std::string>(0, 24, "g"),
-                    test_data<int, std::string>(0, 45, "k"),
-                    test_data<int, std::string>(1, 100, "f"),
-                    test_data<int, std::string>(2, 101, "j"),
-                    test_data<int, std::string>(3, 193, "l"),
-                    test_data<int, std::string>(4, 456, "h"),
-                    test_data<int, std::string>(5, 534, "m")
+                    test_data<int, std::string>(1, 45, "k"),
+                    test_data<int, std::string>(2, 100, "f"),
+                    test_data<int, std::string>(3, 101, "j"),
+                    test_data<int, std::string>(4, 193, "l"),
+                    test_data<int, std::string>(5, 456, "h"),
+                    test_data<int, std::string>(6, 534, "m")
             };
 
     BP_tree<int, std::string, std::less<int>, 5> tree(std::less<int>(), nullptr);
@@ -202,14 +202,14 @@ TEST(bTreePositiveTests, test4)
                     test_data<int, std::string>(1, 2, "b"),
                     test_data<int, std::string>(2, 3, "d"),
                     test_data<int, std::string>(0, 4, "e"),
-                    test_data<int, std::string>(0, 15, "c"),
-                    test_data<int, std::string>(1, 24, "g"),
-                    test_data<int, std::string>(2, 45, "k"),
-                    test_data<int, std::string>(1, 100, "f"),
-                    test_data<int, std::string>(0, 101, "j"),
-                    test_data<int, std::string>(1, 193, "l"),
-                    test_data<int, std::string>(2, 456, "h"),
-                    test_data<int, std::string>(3, 534, "m")
+                    test_data<int, std::string>(1, 15, "c"),
+                    test_data<int, std::string>(2, 24, "g"),
+                    test_data<int, std::string>(3, 45, "k"),
+                    test_data<int, std::string>(0, 100, "f"),
+                    test_data<int, std::string>(1, 101, "j"),
+                    test_data<int, std::string>(2, 193, "l"),
+                    test_data<int, std::string>(3, 456, "h"),
+                    test_data<int, std::string>(4, 534, "m")
             };
 
     BP_tree<int, std::string, std::less<int>, 3> tree(std::less<int>(), nullptr);
@@ -262,10 +262,10 @@ TEST(bTreePositiveTests, test6)
                     test_data<int, std::string>(1, 3, "d"),
                     test_data<int, std::string>(2, 4, "e"),
                     test_data<int, std::string>(0, 15, "c"),
-                    test_data<int, std::string>(0, 45, "k"),
-                    test_data<int, std::string>(1, 101, "j"),
-                    test_data<int, std::string>(2, 456, "h"),
-                    test_data<int, std::string>(3, 534, "m")
+                    test_data<int, std::string>(1, 45, "k"),
+                    test_data<int, std::string>(2, 101, "j"),
+                    test_data<int, std::string>(3, 456, "h"),
+                    test_data<int, std::string>(4, 534, "m")
             };
 
     BP_tree<int, std::string, std::less<int>, 4> tree(std::less<int>(), nullptr);
@@ -418,8 +418,8 @@ TEST(bTreePositiveTests, test9)
     tree.emplace(193, std::string("l"));
     tree.emplace(534, std::string("m"));
 
-    auto b = tree.begin();
-    auto e = tree.end();
+    auto b = tree.lower_bound(4);
+    auto e = tree.upper_bound(101);
     std::vector<decltype(tree)::value_type> actual_result(b, e);
 
     EXPECT_TRUE(compare_obtain_results(expected_result, actual_result));
