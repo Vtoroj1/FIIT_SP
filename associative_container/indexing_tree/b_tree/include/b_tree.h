@@ -1205,9 +1205,7 @@ typename B_tree<tkey, tvalue, compare, t>::btree_iterator B_tree<tkey, tvalue, c
 
     while (true) {
         btree_node* node = *cur;
-        size_t i = 0;
-
-        for (; i < node->_keys.size() && compare_keys(node->_keys[i].first, key); i++);
+        size_t i = find_key_index(node, key);
 
         if (i < node->_keys.size() && keys_equal(node->_keys[i].first, key)) {
             return btree_iterator(path, i);
@@ -1236,20 +1234,19 @@ typename B_tree<tkey, tvalue, compare, t>::btree_iterator B_tree<tkey, tvalue, c
     std::stack<std::pair<btree_node**, size_t>> best_path;
     size_t best_index = 0;
     bool found_best = false;
-    
+
     btree_node** cur = &_root;
     path.push({ cur, 0 });
 
     while (true) {
         btree_node* node = *cur;
-        size_t i = 0;
-        for (; i < node->_keys.size() && compare_keys(node->_keys[i].first, key); i++);
+        size_t i = find_key_index(node, key);
 
         if (i < node->_keys.size()) {
             if (keys_equal(node->_keys[i].first, key)) {
                 return btree_iterator(path, i);
             }
-            
+
             best_path = path;
             best_index = i;
             found_best = true;
@@ -1278,14 +1275,21 @@ typename B_tree<tkey, tvalue, compare, t>::btree_iterator B_tree<tkey, tvalue, c
     std::stack<std::pair<btree_node**, size_t>> best_path;
     size_t best_index = 0;
     bool found_best = false;
-    
+
     btree_node** cur = &_root;
     path.push({ cur, 0 });
 
     while (true) {
         btree_node* node = *cur;
-        size_t i = 0;
-        for (; i < node->_keys.size() && !compare_keys(key, node->_keys[i].first); i++);
+        size_t lo = 0, hi = node->_keys.size();
+        while (lo < hi) {
+            size_t mid = lo + (hi - lo) / 2;
+            if (compare_keys(key, node->_keys[mid].first))
+                hi = mid;
+            else
+                lo = mid + 1;
+        }
+        size_t i = lo;
 
         if (i < node->_keys.size()) {
             best_path = path;
@@ -1430,8 +1434,15 @@ void B_tree<tkey, tvalue, compare, t>::split_child(btree_node* parent, size_t ch
 template<typename tkey, typename tvalue, comparator<tkey> compare, std::size_t t>
 void B_tree<tkey, tvalue, compare, t>::insert_bottom_up(btree_node* node, tree_data_type data)
 {
-    size_t i = 0;
-    for (; i < node->_keys.size() && compare_keys(node->_keys[i].first, data.first); i++);
+    size_t lo = 0, hi = node->_keys.size();
+    while (lo < hi) {
+        size_t mid = lo + (hi - lo) / 2;
+        if (compare_keys(node->_keys[mid].first, data.first))
+            lo = mid + 1;
+        else
+            hi = mid;
+    }
+    size_t i = lo;
 
     if (node->_pointers.empty()) {
         node->_keys.insert(node->_keys.begin() + i, std::move(data));
@@ -1439,7 +1450,6 @@ void B_tree<tkey, tvalue, compare, t>::insert_bottom_up(btree_node* node, tree_d
     }
 
     insert_bottom_up(node->_pointers[i], std::move(data));
-
     if (node->_pointers[i]->_keys.size() > maximum_keys_in_node) {
         split_child(node, i);
     }
@@ -1448,9 +1458,15 @@ void B_tree<tkey, tvalue, compare, t>::insert_bottom_up(btree_node* node, tree_d
 template<typename tkey, typename tvalue, comparator<tkey> compare, std::size_t t>
 size_t B_tree<tkey, tvalue, compare, t>::find_key_index(btree_node* node, const tkey& key)
 {
-    size_t i = 0;
-    for (; i < node->_keys.size() && compare_keys(node->_keys[i].first, key); i++);
-    return i;
+    size_t lo = 0, hi = node->_keys.size();
+    while (lo < hi) {
+        size_t mid = lo + (hi - lo) / 2;
+        if (compare_keys(node->_keys[mid].first, key))
+            lo = mid + 1;
+        else
+            hi = mid;
+    }
+    return lo;
 }
 
 template<typename tkey, typename tvalue, comparator<tkey> compare, std::size_t t>
